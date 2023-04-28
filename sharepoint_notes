@@ -1,0 +1,39 @@
+Resolve distributed cache issue:
+
+Verify the Distributed Cache service status:
+a. Open the SharePoint Management Shell as an administrator.
+b. Run the following command: Get-SPServiceInstance | ? {($_.service.tostring()) -eq "SPDistributedCacheService Name=AppFabricCachingService"} | select Server, Status
+c. Check the status of the Distributed Cache service on each server in the farm.
+
+Restart the Distributed Cache service:
+a. Identify the server(s) with the problematic service.
+b. Open the Services console (services.msc) on the server(s).
+c. Locate the 'AppFabric Caching Service' and restart it.
+
+Clear the cache:
+a. Open the SharePoint Management Shell as an administrator.
+b. Run the following command: Use-CacheCluster
+c. Run the command: Clear-SPDistributedCacheItem -ContainerType DistributedLogonTokenCache
+d. Clear other cache containers, if necessary, by replacing the DistributedLogonTokenCache in the command above with the relevant container name.
+
+Reconfigure the Distributed Cache service:
+a. Open the SharePoint Management Shell as an administrator.
+b. Run the following command to remove the Distributed Cache service instance: Remove-SPDistributedCacheServiceInstance
+c. Run the command to add a new Distributed Cache service instance: Add-SPDistributedCacheServiceInstance
+d. Verify the new instance by running the command from step 1.
+
+Check the AppFabric configuration:
+a. Open the AppFabric configuration file (DistributedCacheService.exe.config) located in the 'C:\Program Files\AppFabric 1.1 for Windows Server' folder.
+b. Verify that the configuration settings are correct, especially the connection string, cache size, and cache host settings.
+
+Monitor event logs and ULS logs:
+a. Check the Windows Event Viewer for AppFabric and SharePoint-related errors.
+b. Review SharePoint ULS logs for any distributed cache-related issues. You can use tools like the 'ULS Viewer' to help with this.
+
+Check the network and firewall settings:
+a. Ensure that the appropriate ports are open and that there are no network-related issues affecting communication between the servers in the SharePoint farm.
+
+Verify cache host version compatibility:
+a. Make sure all servers in the SharePoint farm are running the same version of AppFabric and that it is compatible with your SharePoint version.
+
+Consider reaching out to Microsoft Support or a SharePoint expert if the issue persists.
